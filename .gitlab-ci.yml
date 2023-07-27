@@ -1,0 +1,28 @@
+image: python:3.7.2
+
+before_script: # Defines a script (bash) that must be executed before all jobs
+  - python -V # Print out python version for debugging
+  - pip install -r requirements.txt
+
+stages: # All jobs associated to a stage are run in parallel, and each stage is executed sequentially.
+  - Test
+  - Static Analysis
+
+test_job:
+  stage: Test
+  script:
+    - echo "Running tests"
+    - python -m unittest discover -s "./tests/"
+
+pylint:
+  stage: Static Analysis
+  script:
+  - pylint *.py
+  - pylint notebooks/*.ipynb
+
+flake8:
+  stage: Static Analysis
+  script:
+    - pip install flake8
+    - flake8 *.py
+    - flake8 notebooks/
